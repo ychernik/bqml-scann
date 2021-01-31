@@ -1,0 +1,37 @@
+# These are Cloud Build steps. You can read more about cloud build here: 
+# https://cloud.google.com/cloud-build/docs/
+timeout: 7200s
+steps:
+  # First, we need to clone the repository that we need to test.
+- name: 'gcr.io/cloud-builders/git'
+  id: 'clone'
+  args: ['clone', '--recurse-submodules', '--branch', 'master', 'https://github.com/ychernik/bqml-scann', 'bqml']
+  dir: 'source'
+- name: 'docker.io/library/python:3.7'
+  args: ['bash', '-c', 'pip install gcloud-notebook-training && gcloud-notebook-training --input-folder ./bqml --input-notebook ./bqml/00_prep_bq_and_datastore.ipynb --project-id chernikov-playground --region us-west1 --bucket-name cooltacular-gcp1 --container-uri gcr.io/chernikov-playground/custom-tf2-2-4-cpu --service-account incubator@chernikov-playground.iam.gserviceaccount.com']
+  dir: 'source'
+  timeout: 7200s
+- name: 'docker.io/library/python:3.7'
+  args: ['bash', '-c', 'pip install gcloud-notebook-training && gcloud-notebook-training --input-folder ./bqml --input-notebook ./bqml/00_prep_bq_procedures.ipynb --project-id chernikov-playground --region us-west1 --bucket-name cooltacular-gcp1 --container-uri gcr.io/chernikov-playground/custom-tf2-2-4-cpu --service-account incubator@chernikov-playground.iam.gserviceaccount.com']
+  dir: 'source'
+  timeout: 7200s
+- name: 'docker.io/library/python:3.7'
+  args: ['bash', '-c', 'pip install gcloud-notebook-training && gcloud-notebook-training --input-folder ./bqml --input-notebook ./bqml/01_train_bqml_mf_pmi.ipynb --project-id chernikov-playground --region us-west1 --bucket-name cooltacular-gcp1 --container-uri gcr.io/chernikov-playground/custom-tf2-2-4-cpu --service-account incubator@chernikov-playground.iam.gserviceaccount.com']
+  dir: 'source'
+  timeout: 7200s
+- name: 'docker.io/library/python:3.7'
+  args: ['bash', '-c', 'pip install gcloud-notebook-training && gcloud-notebook-training --input-folder ./bqml --input-notebook ./bqml/02_export_bqml_mf_embeddings.ipynb --project-id chernikov-playground --region us-west1 --bucket-name cooltacular-gcp1 --container-uri gcr.io/chernikov-playground/custom-tf2-2-4-cpu --service-account incubator@chernikov-playground.iam.gserviceaccount.com']
+  dir: 'source'
+  timeout: 7200s
+- name: 'docker.io/library/python:3.7'
+  args: ['bash', '-c', 'pip install gcloud-notebook-training && gcloud-notebook-training --input-folder ./bqml --input-notebook ./bqml/03_create_embedding_lookup_model.ipynb --project-id chernikov-playground --region us-west1 --bucket-name cooltacular-gcp1 --container-uri gcr.io/chernikov-playground/custom-tf2-2-4-cpu --service-account incubator@chernikov-playground.iam.gserviceaccount.com']
+  dir: 'source'
+  timeout: 7200s
+- name: 'docker.io/library/python:3.7'
+  args: ['bash', '-c', 'pip install gcloud-notebook-training && gcloud-notebook-training --input-folder ./bqml --input-notebook ./bqml/04_build_embeddings_scann.ipynb --project-id chernikov-playground --region us-west1 --bucket-name cooltacular-gcp1 --container-uri gcr.io/chernikov-playground/custom-tf2-2-4-cpu --service-account incubator@chernikov-playground.iam.gserviceaccount.com']
+  dir: 'source'
+  timeout: 7200s  
+- name: 'docker.io/library/python:3.7'
+  args: ['bash', '-c', 'pip install gcloud-notebook-training && gcloud-notebook-training --input-folder ./bqml --input-notebook ./bqml/05_deploy_lookup_and_scann_caip.ipynb --project-id chernikov-playground --region us-west1 --bucket-name cooltacular-gcp1 --container-uri gcr.io/chernikov-playground/custom-tf2-2-4-cpu --service-account incubator@chernikov-playground.iam.gserviceaccount.com']
+  dir: 'source'
+  timeout: 7200s    

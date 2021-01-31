@@ -1,0 +1,17 @@
+timeout: 3600s
+steps:
+
+- name: 'gcr.io/cloud-builders/git'
+  id: 'clone'
+  args: ['clone', '--recurse-submodules', '--branch', 'master', 'https://github.com/ychernik/bqml-scann']
+
+- name: gcr.io/cloud-builders/docker
+  id: 'build-image'
+  args: ['build', '-t', 'gcr.io/chernikov-playground/custom-tf2-2-4-cpu', '.']
+  dir: 'bqml-scann/image'
+  timeout: 1200s
+
+- name: gcr.io/cloud-builders/docker
+  id: 'push-production-image'
+  args: ['push', 'gcr.io/chernikov-playground/custom-tf2-2-4-cpu']
+  dir: 'bqml-scann/image'
